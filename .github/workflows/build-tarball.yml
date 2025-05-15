@@ -30,8 +30,8 @@ concurrency:
 env:
   PYTHON_VERSION: '3.12'
   FLAKY_TESTS: keep_retrying
-  CC: sccache clang
-  CXX: sccache clang++
+  CC: clang
+  CXX: clang++
   SCCACHE_GHA_ENABLED: 'true'
 
 permissions:
