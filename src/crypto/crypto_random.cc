@@ -188,7 +188,6 @@ bool CheckPrimeTraits::DeriveBits(Environment* env,
                                   const CheckPrimeConfig& params,
                                   ByteSource* out,
                                   CryptoJobMode mode) {
-
   BignumCtxPointer ctx(BN_CTX_new());
 
   int ret = BN_is_prime_ex(
