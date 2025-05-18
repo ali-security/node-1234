@@ -55,10 +55,10 @@ Maybe<void> RandomBytesTraits::AdditionalConfig(
   return JustVoid();
 }
 
-bool RandomBytesTraits::DeriveBits(
-    Environment* env,
-    const RandomBytesConfig& params,
-    ByteSource* unused) {
+bool RandomBytesTraits::DeriveBits(Environment* env,
+                                   const RandomBytesConfig& params,
+                                   ByteSource* unused,
+                                   CryptoJobMode mode) {
   return ncrypto::CSPRNG(params.buffer, params.size);
 }
 
@@ -145,7 +145,8 @@ Maybe<void> RandomPrimeTraits::AdditionalConfig(
 
 bool RandomPrimeTraits::DeriveBits(Environment* env,
                                    const RandomPrimeConfig& params,
-                                   ByteSource* unused) {
+                                   ByteSource* unused,
+                                   CryptoJobMode mode) {
   // BN_generate_prime_ex() calls RAND_bytes_ex() internally.
   // Make sure the CSPRNG is properly seeded.
   CHECK(ncrypto::CSPRNG(nullptr, 0));
@@ -183,10 +184,10 @@ Maybe<void> CheckPrimeTraits::AdditionalConfig(
   return JustVoid();
 }
 
-bool CheckPrimeTraits::DeriveBits(
-    Environment* env,
-    const CheckPrimeConfig& params,
-    ByteSource* out) {
+bool CheckPrimeTraits::DeriveBits(Environment* env,
+                                  const CheckPrimeConfig& params,
+                                  ByteSource* out,
+                                  CryptoJobMode mode) {
 
   BignumCtxPointer ctx(BN_CTX_new());
 
