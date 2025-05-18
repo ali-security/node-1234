@@ -98,6 +98,25 @@ const pkcs8EncExp = getRegExpForPEM('ENCRYPTED PRIVATE KEY');
 const sec1Exp = getRegExpForPEM('EC PRIVATE KEY');
 const sec1EncExp = (cipher) => getRegExpForPEM('EC PRIVATE KEY', cipher);
 
+// Synthesize OPENSSL_VERSION_NUMBER format with the layout 0xMNN00PPSL
+const opensslVersionNumber = (major = 0, minor = 0, patch = 0) => {
+  assert(major >= 0 && major <= 0xf);
+  assert(minor >= 0 && minor <= 0xff);
+  assert(patch >= 0 && patch <= 0xff);
+  return (major << 28) | (minor << 20) | (patch << 4);
+};
+
+let OPENSSL_VERSION_NUMBER;
+const hasOpenSSL = (major = 0, minor = 0, patch = 0) => {
+  if (!common.hasCrypto) return false;
+  if (OPENSSL_VERSION_NUMBER === undefined) {
+    const regexp = /(?<m>\d+)\.(?<n>\d+)\.(?<p>\d+)/;
+    const { m, n, p } = process.versions.openssl.match(regexp).groups;
+    OPENSSL_VERSION_NUMBER = opensslVersionNumber(m, n, p);
+  }
+  return OPENSSL_VERSION_NUMBER >= opensslVersionNumber(major, minor, patch);
+};
+
 module.exports = {
   modp2buf,
   assertApproximateSize,
@@ -111,4 +130,8 @@ module.exports = {
   pkcs8EncExp,  // used once
   sec1Exp,
   sec1EncExp,
+  hasOpenSSL,
+  get hasOpenSSL3() {
+    return hasOpenSSL(3);
+  },
 };
